@@ -31,7 +31,7 @@ class RDBService:
         return db_connection
 
     @classmethod
-    def run_sql(cls, sql_statement, args, fetch=False):
+    def _run_sql(cls, sql_statement, args, fetch=False):
 
         conn = RDBService._get_db_connection()
 
@@ -63,6 +63,8 @@ class RDBService:
 
         return res
 
+    # @classmethod
+    # def get_select_table(cls, db_schema, table_name, column_):
     @classmethod
     def get_full_table(cls, db_schema, table_name):
 
@@ -122,10 +124,10 @@ class RDBService:
         vals = []
         args = []
 
-        for k,v in create_data.items():
-            cols.append(k)
-            vals.append('%s')
-            args.append(v)
+        for k,v in create_data.items(): # takes a dict of key:value pairs
+            cols.append(k) # keys
+            vals.append('%s') # all strings
+            args.append(v) # values
 
         cols_clause = "(" + ",".join(cols) + ")"
         vals_clause = "values (" + ",".join(vals) + ")"
@@ -135,3 +137,32 @@ class RDBService:
 
         res = RDBService._run_sql(sql_stmt, args)
         return res
+
+    @classmethod
+    def delete(cls, db_schema, table_name, delete_data):
+
+        # args = []
+        #
+        # for k, v in delete_data.items():  # takes a dict of key:value pairs
+        #     args.append(k + "=" + v)
+        #
+        # delete_clause = "(" + " and".join(args) + ")"
+        #
+        # sql_stmt = "delete from " + db_schema + "." + table_name + " where " + \
+        #            delete_clause
+        sql_stmt = "delete from " + db_schema + "." + table_name + " where user_no=%s"
+
+        res = RDBService._run_sql(sql_stmt, delete_data)
+        return res
+        # conn = RDBService._get_db_connection()
+        # cur = conn.cursor()
+        #
+        # sql = "select * from " + db_schema + "." + table_name
+        # print("SQL Statement = " + cur.mogrify(sql, None))
+        #
+        # res = cur.execute(sql)
+        # res = cur.fetchall()
+        #
+        # conn.close()
+        #
+        # return res

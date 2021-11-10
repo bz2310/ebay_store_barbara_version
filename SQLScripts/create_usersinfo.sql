@@ -1,3 +1,4 @@
+DROP DATABASE IF EXISTS usersInfo;
 CREATE DATABASE usersInfo;
 USE usersInfo;
 DROP TABLE IF EXISTS `usersInfo`;
