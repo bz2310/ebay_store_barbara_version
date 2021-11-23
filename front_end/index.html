@@ -1,0 +1,39 @@
+
+{% block main %}
+
+<div class="container">
+  <div class="row">
+    <div class="col">
+
+      <h1>Our Ebay Store</h1>
+    <p> "Welcome back! Google auth token info: {{ google_auth_token }}. TODO find the email name from this access token</p>
+      <hr>
+
+        {% block content %}
+    <h1>Search For User</h1>
+    <form action="" method="post" novalidate>
+        <p>
+            {{ form.first_name.label }}<br>
+            {{ form.first_name(size=32) }}
+        </p>
+
+    <p>
+            {{ form.last_name.label }}<br>
+            {{ form.last_name(size=32) }}
+        </p>
+
+        <p>
+    <p>
+            {{ form.email.label }}<br>
+            {{ form.email(size=32) }}
+        </p>
+
+        <p>{{ form.submit() }}</p>
+    </form>
+{% endblock %}
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}
