@@ -1,5 +1,8 @@
-from flask import Flask, Response, request
+from __future__ import print_function
+
+from flask import Flask, Response, request, render_template, redirect, url_for
 from flask_cors import CORS
+from flask_dance.contrib.google import make_google_blueprint, google
 import json
 import logging
 
@@ -7,70 +10,100 @@ from application_services.imdb_artists_resource import IMDBArtistResource
 from application_services.UsersResource.user_service import UserResource
 from database_services.RDBService import RDBService as RDBService
 
+from front_end.forms import SearchForm
+from werkzeug.datastructures import ImmutableMultiDict
+import pandas as pd
+
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-app = Flask(__name__)
+import os
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'
+app = Flask(__name__, template_folder='front_end')
+app.debug = True
+app.secret_key = 'blah'
+client_id = '891041318318-ocp6i17mcevembkehugg0j0s0f9ni40u.apps.googleusercontent.com'
+client_secret = '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'
+blueprint=make_google_blueprint(client_id=client_id, client_secret=client_secret, scope='openid email')
+app.register_blueprint(blueprint, url_prefix='/login')
+
 CORS(app)
 
+@app.route("/login/google/authorized/", methods=['GET'])
+def login():
+    return redirect(url_for("/"))
 
-@app.route('/')
-def hello_world():
-    return '<u>Hello World!</u>'
+@app.route('/', methods=['GET', 'POST'])
+def index():
 
-# this works
-@app.route('/users')
-def get_users():
-    res = UserResource.get_all_user_data()
-    rsp = Response(json.dumps(res), status=200, content_type="application/json")
-    return rsp
+    if not google.authorized:
+        return redirect(url_for('google.login'))
 
-# ---
-# new for product info, but use user info for now
+    if google.authorized:
 
-# need a method to get all users/products -> done, above
+        bp = app.blueprints.get('google')
+        s = bp.session
 
-# need a method for creating a user/product -> PUT/POST
-@app.route('/users/<user_no>', methods = ['GET', 'POST', 'DELETE', 'PUT'])
-def create_and_get_user(user_no):
+        t = s.token
+
+    actions = ['get customer', 'add customer', 'delete customer']
+
+    if request.method == 'POST':
+        request.method = 'GET'
+        newform = request.form
+        newdict = {}
+        for k,v in newform.items():
+            if 'submit' not in k and len(v) > 0:
+                newdict[k] = v
+        print(newdict)
+        request.form = ImmutableMultiDict(newdict)
+        res = create_and_get_user()
+        return json_to_html(res)
+
+    form = SearchForm()
+    return render_template('index.html', google_auth_token = t, form=form)
+
+def json_to_html(json_result):
+    json_result = json_result.data
+    json_result = pd.DataFrame(json.loads(json_result)).dropna().to_html(index=False)
+    return render_template('table.html', table=json_result)
+
+@app.route('/users', methods = ['GET', 'POST', 'DELETE', 'PUT'])
+def create_and_get_user():
+    print(request.method)
     if request.method == 'GET':  # return info for that user
-        res = UserResource.get_all_user_data()  # fix this later to get only one user data
+        print("request method is a GET")
+        data = request.form.to_dict()
+        if len(data) == 0:
+            res = UserResource.get_all_user_data()
+        else:
+            res = UserResource.get_select_user_data(data)  # fix this later to get only one user data
         rsp = Response(json.dumps(res), status=200, content_type="application/json")
         return rsp
 
-    if request.method == 'POST':  # create that user
-        user_no = request.form.get('user_no')
-        first_name = request.form.get('first_name')
-        last_name = request.form.get('last_name')
-        email = request.form.get('email')
-        print(request.form, flush=True)
-        # print(request.data, flush=True)
-        # pass these to create_user in user_service.py, as if that's the
-        # correct name for a file that creates something named UserResource
-        # and ONLY UserResource
-        res = UserResource.create_user(user_no, first_name, last_name, email)
-        rsp = Response(json.dumps(res), status=200, content_type="application/json")
+    elif request.method == 'POST':  # create that user
+        print("request method is a POST")
+        data = request.args.to_dict()
+        res = UserResource.create_user(data)
+        rsp = Response(json.dumps(res), status=201, content_type="application/json")
         return rsp
 
-    if request.method == 'DELETE':
-        data = request.form
+    elif request.method == 'DELETE':
+        print("request method is a DELETE")
+        data = request.args.to_dict()
         res = UserResource.delete_user(data)
-        rsp = Response(json.dumps(res), status=200, content_type="application/json")
+        rsp = Response(json.dumps(res), status=204, content_type="application/json")
         return rsp
 
-    if request.method == "PUT":
-        data = request.form
+    elif request.method == "PUT":
+        print("request method is a PUT")
+        data = request.args.to_dict()
         res = UserResource.delete_user(data)
-        user_no = request.form.get('user_no')
-        first_name = request.form.get('first_name')
-        last_name = request.form.get('last_name')
-        email = request.form.get('email')
-        res = UserResource.create_user(user_no, first_name, last_name, email)
+        res = UserResource.create_user(data)
         rsp = Response(json.dumps(res), status=200, content_type="application/json")
         return rsp
-
-
 
 # need a method for updating a user/product -> UPDATE
 
@@ -96,4 +129,4 @@ def get_by_prefix(db_schema, table_name, column_name, prefix):
 
 
 if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5000, debug=True)

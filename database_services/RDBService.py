@@ -1,5 +1,4 @@
 import pymysql
-import json
 import logging
 
 import middleware.context as context
@@ -25,7 +24,7 @@ class RDBService:
         db_info = context.get_db_info()
 
         db_connection = pymysql.connect(
-           **db_info,
+            **db_info,
             autocommit=True
         )
         return db_connection
@@ -51,9 +50,9 @@ class RDBService:
 
         conn = RDBService._get_db_connection()
         cur = conn.cursor()
-
+        print("Running get by prefix")
         sql = "select * from " + db_schema + "." + table_name + " where " + \
-            column_name + " like " + "'" + value_prefix + "%'"
+              column_name + " like " + "'" + value_prefix + "%'"
         print("SQL Statement = " + cur.mogrify(sql, None))
 
         res = cur.execute(sql)
@@ -63,8 +62,6 @@ class RDBService:
 
         return res
 
-    # @classmethod
-    # def get_select_table(cls, db_schema, table_name, column_):
     @classmethod
     def get_full_table(cls, db_schema, table_name):
 
@@ -86,31 +83,39 @@ class RDBService:
 
         terms = []
         args = []
-        clause = None
 
         if template is None or template == {}:
             clause = ""
             args = None
         else:
-            for k,v in template.items():
-                terms.append(k + "=%s")
+            for k, v in template.items():
+                terms.append(k + "='%s'")
                 args.append(v)
 
-            clause = " where " +  " AND ".join(terms)
-
+            clause = " where " + " AND ".join(terms)
 
         return clause, args
 
     @classmethod
-    def find_by_template(cls, db_schema, table_name, template, field_list):
-
-        wc,args = RDBService._get_where_clause_args(template)
+    def find_by_template(cls, db_schema, table_name, data):
 
         conn = RDBService._get_db_connection()
         cur = conn.cursor()
 
-        sql = "select * from " + db_schema + "." + table_name + " " + wc
-        res = cur.execute(sql, args=args)
+        args = []
+
+        for k, v in data.items():  # takes a dict of key:value pairs
+            args.append(k + "='" + v + "'")
+
+        find_clause = "(" + " and ".join(args) + ")"
+        print(find_clause)
+
+        sql_stmt = "select * from " + db_schema + "." + table_name + " " + " where " + \
+                   find_clause
+
+        print("SQL Statement = " + cur.mogrify(sql_stmt, None))
+
+        res = cur.execute(sql_stmt)
         res = cur.fetchall()
 
         conn.close()
@@ -124,45 +129,32 @@ class RDBService:
         vals = []
         args = []
 
-        for k,v in create_data.items(): # takes a dict of key:value pairs
-            cols.append(k) # keys
-            vals.append('%s') # all strings
-            args.append(v) # values
+        for k, v in create_data.items():  # takes a dict of key:value pairs
+            cols.append(k)  # keys
+            vals.append('%s')  # all strings
+            args.append(v)  # values
 
         cols_clause = "(" + ",".join(cols) + ")"
         vals_clause = "values (" + ",".join(vals) + ")"
 
         sql_stmt = "insert into " + db_schema + "." + table_name + " " + cols_clause + \
-            " " + vals_clause
+                   " " + vals_clause
 
-        res = RDBService._run_sql(sql_stmt, args)
+        res = RDBService._run_sql(sql_stmt, args, fetch=False)
         return res
 
     @classmethod
     def delete(cls, db_schema, table_name, delete_data):
 
-        # args = []
-        #
-        # for k, v in delete_data.items():  # takes a dict of key:value pairs
-        #     args.append(k + "=" + v)
-        #
-        # delete_clause = "(" + " and".join(args) + ")"
-        #
-        # sql_stmt = "delete from " + db_schema + "." + table_name + " where " + \
-        #            delete_clause
-        sql_stmt = "delete from " + db_schema + "." + table_name + " where user_no=%s"
+        args = []
+
+        for k, v in delete_data.items():  # takes a dict of key:value pairs
+            args.append(k + "='" + v + "'")
+
+        delete_clause = "(" + " and ".join(args) + ")"
+
+        sql_stmt = "delete from " + db_schema + "." + table_name + " where " + \
+                   delete_clause
 
         res = RDBService._run_sql(sql_stmt, delete_data)
         return res
-        # conn = RDBService._get_db_connection()
-        # cur = conn.cursor()
-        #
-        # sql = "select * from " + db_schema + "." + table_name
-        # print("SQL Statement = " + cur.mogrify(sql, None))
-        #
-        # res = cur.execute(sql)
-        # res = cur.fetchall()
-        #
-        # conn.close()
-        #
-        # return res

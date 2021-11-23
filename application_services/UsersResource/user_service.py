@@ -1,3 +1,4 @@
+from __future__ import print_function
 from application_services.BaseApplicationResource import BaseRDBApplicationResource
 from database_services.RDBService import RDBService
 
@@ -20,24 +21,19 @@ class UserResource(BaseRDBApplicationResource):
         res = RDBService.get_full_table("UsersInfo", "UsersInfo")
         return res
 
-    # @classmethod
-    # def get_one_user_data(cls):
-    #     res = RDBService.get_select_table("UsersInfo", "UsersInfo")
-    #     return res
-
     @classmethod
-    def create_user(cls, user_no, first_name, last_name, email):
-        data_to_create = {"user_no": user_no,
-                          "first_name": first_name,
-                          "last_name": last_name,
-                          "email": email}
-        res = RDBService.create("UsersInfo", "UsersInfo", data_to_create)
+    def get_select_user_data(cls, template):
+        res = RDBService.find_by_template("UsersInfo", "UsersInfo", template)
         return res
 
     @classmethod
-    def delete_user(cls, data):
-        data_to_delete = data['user_no']
-        res = RDBService.delete("UsersInfo", "UsersInfo", data_to_delete)
+    def create_user(cls, data):
+        res = RDBService.create("UsersInfo", "UsersInfo", data)
+        return res
+
+    @classmethod
+    def delete_user(cls, user_no):
+        res = RDBService.delete("UsersInfo", "UsersInfo", user_no)
         return res
 
     # @classmethod
