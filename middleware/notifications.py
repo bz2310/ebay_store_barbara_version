@@ -1,17 +1,11 @@
-from flask import Flask, request
-import requests, json
+import boto3, json
 
-def process_message(msg, timestamp):
-    js = json.loads(msg)
-    ## handle message
+def publish_note(msg):
+    client = boto3.client('sns', region_name='us-east-2',
+                          aws_access_key_id='AKIA2QZOYBRAXTZADA27',
+                          aws_secret_access_key='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'
+                          )
+    txt_msg = json.dumps(msg)
 
-def sns():
-    try:
-        js = json.loads(request.data)
-    except:
-        pass
-
-    header = request.headers.get("X-Amz-Sns-Message-Type")
-
-    if header == 'Notification':
-        process_message(js['Message', js['Timestamp']])
+    client.publish(TopicArn="arn:aws:sns:us-east-2:723263163457:ebay_store_topic",
+                   Message=txt_msg)

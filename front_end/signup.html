@@ -5,12 +5,12 @@
   <div class="row">
     <div class="col">
 
-      <h1>Our Ebay Store</h1>
-    <p> "Welcome back! Google auth token info: {{ google_auth_token }}. TODO find the email name from this access token</p>
+        <h1><a href={{ url_for("index") }}>Back To Our Ebay Store</a></h1>
+
+    <h2>Sign up or delete account</h2>
       <hr>
 
         {% block content %}
-    <h1>Search For User</h1>
     <form action="" method="post" novalidate>
         <p>
             {{ form.first_name.label }}<br>
@@ -22,12 +22,11 @@
             {{ form.last_name(size=32) }}
         </p>
 
-        <p>
     <p>
             {{ form.email.label }}<br>
             {{ form.email(size=32) }}
         </p>
-
+<p>{{ form.action()}}</p>
         <p>{{ form.submit() }}</p>
     </form>
 {% endblock %}
@@ -35,7 +34,4 @@
     </div>
   </div>
 </div>
-
-    <a href={{ url_for('signup') }}> Click here to sign up for an account or delete an existing account </a>
-
 {% endblock %}
