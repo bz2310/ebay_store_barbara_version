@@ -11,7 +11,7 @@ import numpy as np
 from application_services.UsersResource.user_service import UserResource
 from application_services.ProductsResource import ProductResource
 
-from front_end.forms import AdminForm,SignupForm,ProductForm
+from static.forms import AdminForm,SignupForm,ProductForm
 from werkzeug.datastructures import ImmutableMultiDict
 import pandas as pd
 from middleware.notifications import publish_note
@@ -22,8 +22,10 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-app = Flask(__name__, template_folder='front_end')
+app = Flask(__name__, template_folder='static')
 app.config['FLASKS3_BUCKET_NAME'] = 'charitystore'
+app.config['AWS_ACCESS_KEY_ID'] = 'AKIAT5PRHNCLBWVMMBRD'
+app.config['AWS_SECRET_ACCESS_KEY'] = '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'
 app.debug = True
 app.secret_key = 'SqIoUWyqYETxs8IPQkRjvSWrDqn/2VSFXzVGRoHW'
 

@@ -1,0 +1,69 @@
+
+
+<body>
+{% block products %}
+<head>
+	<title>Our Ebay Store</title>
+	<link rel="stylesheet" type="text/css" href="../static/products.css">
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,900" rel="stylesheet">
+
+</head>
+
+   <div class="CartContainer">
+   	   <div class="Header">
+   	   	<h1 class="Heading">Our Ebay Store</h1>
+   	   </div>
+
+   <div class="links"><a href={{ url_for('signup') }}> Click here to sign up</a></div>
+
+    {% for product in products %}
+
+   	   <div class="Cart-Items pad">
+   	   	  <div class="image-box">
+              <img src={{ product.image }} width=150" height="70">
+   	   	  </div>
+   	   	  <div class="about">
+   	   	  	<h1 class="title">{{ product.product_name}}</h1>
+   	   	  	<h3 class="subtitle">Product description about this charity</h3>
+   	   	  </div>
+   	   	  <div class="counter">
+   	   	  	<div class="btn">+</div>
+   	   	  	<div class="count"> 0 / {{product.inventory }}</div>
+   	   	  	<div class="btn">-</div>
+   	   	  </div>
+   	   	  <div class="prices">
+   	   	  	<div class="amount">${{ product.price }}</div>
+   	   	  </div>
+   	   </div>
+{% endfor %}
+
+      {% if page < max_page %} <div class="links"><a href="{{ url_for('index', page=page+1) }}">Next products >></a></div>{% else %}{% endif %}
+        {% if page > 1 %} <div class="links"><a href="{{ url_for('index', page=page-1) }}"> << Previous products</a></div>{% else %}{% endif %}
+
+   	 <hr>
+   	 <div class="checkout">
+   	 <div class="total">
+   	 	<div>
+   	 		<div class="Subtotal">Sub-Total</div>
+   	 		<div class="items">2 items</div>
+   	 	</div>
+   	 	<div class="total-amount">$6.18</div>
+   	 </div>
+   	 <button class="button">Checkout</button></div>
+
+   <div class="links"><a href={{ url_for('admin_accounts') }}> Admins click here to manage users </a></div>
+
+   <div class="links"><a href={{ url_for('admin_products') }}> Admins click here to manage products </a></div>
+   </div>
+
+{% endblock %}
+</body>
+
+
+
+
+
+
+
+
+

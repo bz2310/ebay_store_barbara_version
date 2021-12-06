@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col">
+
+        <h1><a href={{ url_for("index") }}>Back To Our Ebay Store</a></h1>
+      <hr>
+
+    <h2>Signup for Account</h2>
+    <form action="" method="post" novalidate>
+        <p>
+            {{ form.first_name.label }}<br>
+            {{ form.first_name(size=32) }}
+        </p>
+
+    <p>
+            {{ form.last_name.label }}<br>
+            {{ form.last_name(size=32) }}
+        </p>
+
+        <p>
+    <p>
+            {{ form.email.label }}<br>
+            {{ form.email(size=32) }}
+        </p>
+
+        <p>{{ form.submit() }}</p>
+    </form>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}
