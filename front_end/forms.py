@@ -12,7 +12,7 @@ class AdminForm(FlaskForm):
     first_name = StringField('First Name', validators=[InputRequired(),Length(min=1)])
     last_name = StringField('Last Name', validators=[InputRequired(),Length(min=1)])
     email = EmailField('Email', validators=[DataRequired(),Length(min=6, max=35)])
-    action = SelectField('Action', choices = ['Sign up', 'Delete', 'Search'], validators = [InputRequired()])
+    action = SelectField('Action', choices = ['Search', 'Sign up', 'Delete'], validators = [InputRequired()])
     submit = SubmitField('Submit')
 
 class BetterDecimalField(DecimalField):
@@ -48,5 +48,5 @@ class ProductForm(FlaskForm):
     price = BetterDecimalField('Price', round_always=True, validators=[DataRequired(), NumberRange(min=0, max=10000)])
     inventory = IntegerField('Number in inventory', validators=[DataRequired(), Length(min=1)])
     image = StringField('Image URL', validators=[DataRequired()])
-    action = SelectField('Action', choices = ['Create', 'Delete', 'Search'], validators = [InputRequired()])
+    action = SelectField('Action', choices = ['Search', 'Create', 'Delete'], validators = [InputRequired()])
     submit = SubmitField('Submit')

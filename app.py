@@ -79,7 +79,7 @@ def signup():
         newdict['user_no'] = str(pd.DataFrame(res).dropna().user_no.astype(int).max() + 1)
         ## check validity of new email
         if not check_email(newdict['email']):
-            return json_to_html({}, title='Could not create user, email not valid')
+            return json_to_html(None, title='Could not create user, email not valid')
 
         request.form = ImmutableMultiDict(newdict)
         res = create_and_get_user()
@@ -126,12 +126,13 @@ def admin_accounts():
             newdict['user_no'] = str(pd.DataFrame(res).dropna().user_no.astype(int).max() + 1)
             ## check validity of new email
             if not check_email(newdict['email']):
-                return json_to_html({}, title='Could not create user, email not valid')
+                return json_to_html(None, title='Could not create user, email not valid')
 
         request.form = ImmutableMultiDict(newdict)
         method = method_lookup[request.method]
         res = create_and_get_user()
-
+        if res.status_code > 400:
+            return json_to_html(None, title='%s not successful'%method)
         return json_to_html(res, title='%s following user(s):'%method)
 
     form = AdminForm()
@@ -162,6 +163,7 @@ def admin_products():
 
         ## If desired action is actually a POST, aka creating a user
         ## Then create a new user number and check the email validity
+
         if request.method == 'POST':
             ## create a new product number
             res = ProductResource.get_all_product_data()
@@ -171,15 +173,20 @@ def admin_products():
         method = method_lookup[request.method]
         res = create_and_get_product()
 
+        if res.status_code > 400:
+            return json_to_html(None, title='%s not successful'%method)
         return json_to_html(res, title='%s following product(s):'%method)
 
     form = ProductForm()
-    print(dir(form))
     return render_template('admin_products.html', google_auth_token = t, form=form)
 
 def json_to_html(json_result, title):
-    json_result = json_result.data
-    json_result = pd.DataFrame(json.loads(json_result)).dropna().to_html(index=False)
+    if not json_result:
+        json_result = "<p>No data</p>"
+    else:
+        json_result = json_result.data
+        json_result = pd.DataFrame(json.loads(json_result)).dropna().to_html(index=False)
+
     return render_template('table.html', table=json_result, title=title)
 
 @app.route('/api/users/<user_no>', methods = ['GET', 'POST', 'DELETE', 'PUT'])
@@ -200,28 +207,29 @@ def create_and_get_user(user_no=None):
             res = UserResource.get_select_user_data(data)
 
         print(res)
-        rsp = Response(json.dumps(res), status=200, content_type="application/json")
+        if len(res) == 0:
+            rsp = Response('User not found', status=404, content_type='application/json')
+        else:
+            rsp = Response(json.dumps(res), status=200, content_type="application/json")
         return rsp
 
     elif request.method == 'POST':  # create that user
         data = request.form.to_dict()
         res = UserResource.create_user(data)
-        rsp = Response(json.dumps(res), status=201, content_type="application/json")
-
-        ## send SNS notification for new user
-        publish_note("New user created with characteristics %s" % print_dict(data))
-
+        if len(res) == 0:
+            rsp = Response("User not created successfully", status=400, content_type='application/json')
+        else:
+            rsp = Response(json.dumps(res), status=201, content_type="application/json")
+            ## send SNS notification for new user
+            publish_note("New user created with characteristics %s" % print_dict(data))
         return rsp
 
     elif request.method == 'DELETE':
         data = request.form.to_dict()
-
         res = UserResource.delete_user(data)
         rsp = Response(json.dumps(res), status=204, content_type="application/json")
-
         ## send SNS notification for deleting user
         publish_note("Deleted user with characteristics %s" % print_dict(data))
-
         return rsp
 
     elif request.method == "PUT":
@@ -249,16 +257,21 @@ def create_and_get_product(product_no=None):
             res = ProductResource.get_select_product_data(data)
 
         print(res)
-        rsp = Response(json.dumps(res), status=200, content_type="application/json")
+        if len(res) == 0:
+            rsp = Response('Product not found', status=404, content_type='application/json')
+        else:
+            rsp = Response(json.dumps(res), status=200, content_type="application/json")
         return rsp
 
     elif request.method == 'POST':  # create that product
         data = request.form.to_dict()
         res = ProductResource.create_product(data)
-        rsp = Response(json.dumps(res), status=201, content_type="application/json")
-
-        ## send SNS notification for new product
-        publish_note("New product created with characteristics %s" % print_dict(data))
+        if len(res) == 0:
+            rsp = Response("Product not created successfully", status=400, content_type='application/json')
+        else:
+            rsp = Response(json.dumps(res), status=201, content_type="application/json")
+            ## send SNS notification for new product
+            publish_note("New product created with characteristics %s" % print_dict(data))
 
         return rsp
 
