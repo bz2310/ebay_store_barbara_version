@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <div class="col">
+
+        <h1><a href={{ url_for("index") }}>Back To Our Ebay Store</a></h1>
+
+    <h2>Admin page: search for, create, and delete products</h2>
+
+            <p> "Welcome back! Google auth token info: {{ google_auth_token }}. TODO find the email name from this access token</p>
+
+      <hr>
+
+    <form action="" method="post">
+
+        <p>
+            {{ form.product_name.label }}<br>
+            {{ form.product_name(size=32) }}
+        </p>
+
+        <p>
+            {{ form.price.label }}<br>
+            {{ form.price(size=32) }}
+        </p>
+
+        <p>
+            {{ form.inventory.label }}<br>
+            {{ form.inventory(size=32) }}
+        </p>
+
+        <p>
+            {{ form.image.label }}<br>
+            {{ form.image(size=32) }}
+        </p>
+
+
+<p>{{ form.action()}}</p>
+        <p>{{ form.submit() }}</p>
+    </form>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

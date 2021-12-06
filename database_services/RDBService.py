@@ -129,6 +129,8 @@ class RDBService:
         vals = []
         args = []
 
+        print(create_data)
+
         for k, v in create_data.items():  # takes a dict of key:value pairs
             cols.append(k)  # keys
             vals.append('%s')  # all strings
@@ -141,12 +143,20 @@ class RDBService:
                    " " + vals_clause
 
         res = RDBService._run_sql(sql_stmt, args, fetch=False)
+
+        print(create_data)
+        res = RDBService.find_by_template(db_schema, table_name, create_data)
+
+        print(res)
         return res
 
     @classmethod
     def delete(cls, db_schema, table_name, delete_data):
 
         args = []
+
+        print("delete_data")
+        print(delete_data)
 
         for k, v in delete_data.items():  # takes a dict of key:value pairs
             args.append(k + "='" + v + "'")

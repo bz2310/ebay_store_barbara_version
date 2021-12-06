@@ -32,12 +32,7 @@ class UserResource(BaseRDBApplicationResource):
         return res
 
     @classmethod
-    def delete_user(cls, user_no):
-        res = RDBService.delete("UsersInfo", "UsersInfo", user_no)
-        return res
-
-    # @classmethod
-    # def update_user(cls, data):
-    #     data_to_update = data
-    #     res = RDBService.delete("UsersInfo", "UsersInfo", data_to_update)
-    #     return res
+    def delete_user(cls, data):
+        res1 = RDBService.find_by_template("UsersInfo", "UsersInfo", data)
+        res = RDBService.delete("UsersInfo", "UsersInfo", data)
+        return res1
