@@ -50,3 +50,10 @@ class BaseRDBApplicationResource(BaseApplicationResource):
     @abstractmethod
     def get_data_resource_info(self):
         pass
+
+    ## leftover from template
+    @classmethod
+    def get_by_name_prefix(cls, name_prefix):
+        res = RDBService.get_by_prefix("IMDBFixed", "names_basic_recent",
+                                       "primaryName", name_prefix)
+        return res

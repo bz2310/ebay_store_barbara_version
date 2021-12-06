@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField,SubmitField,EmailField,SelectField
-from wtforms.validators import DataRequired,Length,InputRequired
+from wtforms.validators import DataRequired,Length,InputRequired,ValidationError
 
 class SearchForm(FlaskForm):
     first_name = StringField('First Name', validators=[DataRequired()])

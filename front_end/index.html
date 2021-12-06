@@ -1,15 +1,14 @@
+{% extends 'base.html' %}
 
-{% block main %}
+{% block content %}
 
 <div class="container">
   <div class="row">
     <div class="col">
 
       <h1>Our Ebay Store</h1>
-    <p> "Welcome back! Google auth token info: {{ google_auth_token }}. TODO find the email name from this access token</p>
       <hr>
 
-        {% block content %}
     <h1>Search For User</h1>
     <form action="" method="post" novalidate>
         <p>
@@ -30,12 +29,13 @@
 
         <p>{{ form.submit() }}</p>
     </form>
-{% endblock %}
+
+<p><a href={{ url_for('signup') }}> Click here to sign up</a></p>
+
 
     </div>
   </div>
 </div>
 
-    <a href={{ url_for('signup') }}> Click here to sign up for an account or delete an existing account </a>
 
 {% endblock %}

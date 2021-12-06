@@ -6,7 +6,6 @@ from flask_dance.contrib.google import make_google_blueprint, google
 import json
 import logging
 
-from application_services.imdb_artists_resource import IMDBArtistResource
 from application_services.UsersResource.user_service import UserResource
 from database_services.RDBService import RDBService as RDBService
 
@@ -14,40 +13,39 @@ from front_end.forms import SearchForm,SignupForm
 from werkzeug.datastructures import ImmutableMultiDict
 import pandas as pd
 from middleware.notifications import publish_note
+from middleware.security import check_security, check_email
+from middleware.context import google_auth_keygen
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-import os
-os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
-os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'
 app = Flask(__name__, template_folder='front_end')
 app.debug = True
 app.secret_key = 'blah'
-client_id = '891041318318-ocp6i17mcevembkehugg0j0s0f9ni40u.apps.googleusercontent.com'
-client_secret = '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'
-blueprint=make_google_blueprint(client_id=client_id, client_secret=client_secret, scope='openid email')
+
+import os
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+os.environ['OAUTHLIB_RELAX_TOKEN_SCOPE'] = '1'
+client_id, client_secret = google_auth_keygen()
+blueprint = make_google_blueprint(client_id=client_id, client_secret=client_secret, scope=['profile','email'])
+
 app.register_blueprint(blueprint, url_prefix='/login')
 
 CORS(app)
 
 @app.route("/login/google/authorized/", methods=['GET'])
 def login():
-    return redirect(url_for("/"))
+    return redirect(url_for('\signup'))
+
+@app.before_request
+def security_before_request():
+    security_status = check_security(request, google, app)
+    if not security_status:
+        return redirect(url_for('google.login'))
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-
-    if not google.authorized:
-        return redirect(url_for('google.login'))
-
-    if google.authorized:
-
-        bp = app.blueprints.get('google')
-        s = bp.session
-
-        t = s.token
 
     if request.method == 'POST':
         request.method = 'GET'
@@ -64,7 +62,7 @@ def index():
         return json_to_html(res, 'Search results for users')
 
     form = SearchForm()
-    return render_template('index.html', google_auth_token = t, form=form)
+    return render_template('index.html', form=form)
 
 def print_dict(my_dict):
     mystr = ""
@@ -74,6 +72,11 @@ def print_dict(my_dict):
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
+
+    bp = app.blueprints.get('google')
+    s = bp.session
+    t = s.token
+
     action_lookup = {'Sign up':'POST', 'Delete':'DELETE'}
     method_lookup = {'POST':'create', 'DELETE':'delete'}
     if request.method == 'POST':
@@ -88,6 +91,10 @@ def signup():
                 newdict[k] = v
         res = UserResource.get_all_user_data()
         newdict['user_no'] = str(pd.DataFrame(res).dropna().user_no.astype(int).max() + 1)
+
+        if not check_email(newdict['email']):
+            return json_to_html({}, title='Could not %s user, email not valid' % method)
+
         publish_note("New user created with characteristics %s"%print_dict(newdict))
 
         request.form = ImmutableMultiDict(newdict)
@@ -99,7 +106,7 @@ def signup():
         return json_to_html(res, title='Successfully %sd user'%method)
 
     form = SignupForm()
-    return render_template('signup.html', form=form)
+    return render_template('signup.html', google_auth_token=t, form=form)
 
 def json_to_html(json_result, title):
     json_result = json_result.data
@@ -144,14 +151,6 @@ def create_and_get_user():
 # need a method for deleting a user/product -> DELETE
 
 # --- old template code below this line ---
-
-# this doesn't work
-@app.route('/imdb/artists/<prefix>')
-def get_artists_by_prefix(prefix):
-    res = IMDBArtistResource.get_by_name_prefix(prefix)
-    rsp = Response(json.dumps(res), status=200, content_type="application/json")
-    return rsp
-
 
 
 # this probably doesn't work

@@ -1,15 +1,14 @@
-
 import os
-
-# This is a bad place for this import
 import pymysql
 
-def get_db_info():
-    """
-    This is crappy code.
+def email_keygen():
+    return 'c784699b774e4bcc89ef39708249263f'
 
-    :return: A dictionary with connect info for MySQL
-    """
+def google_auth_keygen():
+    return '891041318318-ocp6i17mcevembkehugg0j0s0f9ni40u.apps.googleusercontent.com', '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'
+
+def get_db_info():
+
     db_host = os.environ.get("DBHOST", None)
     db_user = os.environ.get("DBUSER", None)
     db_password = os.environ.get("DBPASSWORD", None)
