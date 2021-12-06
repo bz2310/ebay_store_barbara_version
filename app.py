@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 from flask import Flask, Response, request, render_template, redirect, url_for
+from flask_s3 import FlaskS3
 from flask_cors import CORS
 from flask_dance.contrib.google import make_google_blueprint, google
 import json
@@ -22,8 +23,9 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 app = Flask(__name__, template_folder='front_end')
+app.config['FLASKS3_BUCKET_NAME'] = 'charitystore'
 app.debug = True
-app.secret_key = 'blah'
+app.secret_key = 'SqIoUWyqYETxs8IPQkRjvSWrDqn/2VSFXzVGRoHW'
 
 import os
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
@@ -34,6 +36,12 @@ blueprint = make_google_blueprint(client_id=client_id, client_secret=client_secr
 app.register_blueprint(blueprint, url_prefix='/login')
 
 CORS(app)
+
+s3 = FlaskS3()
+def start_app():
+    app = Flask(__name__)
+    s3.init_app(app)
+    return app
 
 @app.route("/login/google/authorized/", methods=['GET'])
 def login():
