@@ -13,9 +13,10 @@
    	   <div class="Header">
    	   	<h1 class="Heading">Our Ebay Store</h1>
    	   </div>
-
+<div class="links"><a href={{ url_for('about_us') }}> About us</a></div>
    <div class="links"><a href={{ url_for('signup') }}> Click here to sign up as a new user</a></div>
    <div class="links"><a href={{ url_for('seller_signup') }}> Click here to apply to be a partner charity</a></div>
+
 
     {% for product in products %}
 
@@ -25,7 +26,7 @@
    	   	  </div>
    	   	  <div class="about">
    	   	  	<h1 class="title">{{ product.product_name}}</h1>
-   	   	  	<h3 class="subtitle">Product description about this charity</h3>
+   	   	  	<h3 class="subtitle">{{ product.description}}</h3>
    	   	  </div>
    	   	  <div class="counter">
    	   	  	<div class="btn">+</div>

@@ -1,1 +1,1 @@
-# demo-flask
+# Charity Store

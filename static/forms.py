@@ -58,6 +58,7 @@ class ProductForm(FlaskForm):
     product_name = StringField('Product Name', validators=[InputRequired(),Length(min=1)])
     price = BetterDecimalField('Price', round_always=True, validators=[NumberRange(min=0, max=10000)])
     inventory = IntegerField('Number in inventory', validators=[Length(min=1)])
+    description = StringField('Description')
     image = StringField('Image URL')
     seller_no = StringField('Seller No')
     action = SelectField('Action', choices = ['Search', 'Create', 'Delete'], validators = [InputRequired()])

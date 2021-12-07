@@ -69,6 +69,10 @@ def index(page=1):
     print(paginated_products)
     return render_template('index.html', products = paginated_products, page=page, max_page = max_page)
 
+@app.route("/about_us", methods=['GET'])
+def about_us():
+    return render_template('about_us.html')
+
 def json_to_html(json_result, title):
     if not json_result:
         json_result = "<p>No data</p>"
@@ -320,7 +324,7 @@ def create_and_get_product(product_no=None):
         data = request.form.to_dict()
 
         ## check if data dictionary is long enough
-        if len(set(['product_name', 'price', 'inventory', 'image', 'product_no', 'seller_no']) - set(list(data.keys()))) > 0:
+        if len(set(['product_name', 'price', 'inventory','description', 'image', 'product_no', 'seller_no']) - set(list(data.keys()))) > 0:
             rsp = Response("Product not created successfully, please fill in all the data", status=400,
                            content_type='application/json')
             return rsp
