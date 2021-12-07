@@ -515,6 +515,10 @@ def seller_signup():
 
         request.form = ImmutableMultiDict(newdict)
         res = create_and_get_seller()
+
+        ## send SNS notification for new product
+        publish_note("New seller applied to become a partner charity. Reach out to them to send an application: %s" % print_dict(data))
+
         return json_to_html(res, 'Created following seller:')
 
     form = SellerSignupForm()
