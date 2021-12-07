@@ -56,13 +56,6 @@ def security_before_request():
     if not security_status:
         return redirect(url_for('google.login'))
 
-@app.route('/sellers', methods=['GET'])
-def sellers_test():
-    res = SellerResource.find_related_product([['seller_no', 'seller_no', '1']])
-    print(res)
-    rsp = Response(json.dumps(res), status=200, content_type="application/json")
-    return rsp
-
 @app.route("/", methods=['GET'])
 @app.route("/<int:page>", methods=['GET'])
 def index(page=1):

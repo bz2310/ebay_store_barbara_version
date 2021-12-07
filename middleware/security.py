@@ -1,7 +1,7 @@
 from middleware.context import email_keygen
 import requests
 
-security_paths = ['/admin_accounts', '/admin_products']
+security_paths = ['/admin_accounts', '/admin_products', '/admin_sellers']
 
 def check_security(request, google, app):
     path = request.path
