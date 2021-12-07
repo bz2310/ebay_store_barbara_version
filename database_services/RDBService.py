@@ -63,6 +63,40 @@ class RDBService:
         return res
 
     @classmethod
+    def get_by_foreign_id(cls, db_schema, table_name1, table_name2, args_list):
+        # find rows in table_name2 associated with table_name1
+        # args_list in format: [[field1, field2, val], [field1, field2, val], ...]
+
+        conn = RDBService._get_db_connection()
+        cur = conn.cursor()
+
+        sql = "select " + db_schema + "." + table_name2 + ".* from " + db_schema + "." + table_name2 + \
+              " inner join " + db_schema + "." + table_name1
+
+        print(sql)
+
+        where_clauses = []
+        for arg in args_list:
+            print(arg)
+            field1, field2, val = arg
+            where_clauses.append(" where (" + db_schema + "." + table_name2 + "." + field2 + " = " + db_schema + "." + table_name1 + "." + field1 + \
+                                 ' and ' + db_schema + "." + table_name1 + "." + field1 + " = " + val + ")"
+                                 )
+
+        sql += " AND ".join(where_clauses)
+
+        print(sql)
+
+        print("SQL Statement = " + cur.mogrify(sql, None))
+
+        res = cur.execute(sql)
+        res = cur.fetchall()
+
+        conn.close()
+
+        return res
+
+    @classmethod
     def get_full_table(cls, db_schema, table_name):
 
         conn = RDBService._get_db_connection()

@@ -5,13 +5,24 @@ from wtforms.validators import DataRequired,Length,InputRequired,ValidationError
 class SignupForm(FlaskForm):
     first_name = StringField('First Name', validators=[DataRequired()])
     last_name = StringField('Last Name', validators=[DataRequired()])
-    email = EmailField('Email', validators=[DataRequired(),Length(min=6, max=35)])
+    email = EmailField('Email', validators=[DataRequired(), Length(min=6, max=35)])
     submit = SubmitField('Signup')
 
+class SellerSignupForm(FlaskForm):
+    charity_name = StringField('Charity Name', validators=[Length(min=1)])
+    email = EmailField('Email', validators=[Length(min=6, max=35)])
+    submit = SubmitField('Apply')
+
 class AdminForm(FlaskForm):
-    first_name = StringField('First Name', validators=[InputRequired(),Length(min=1)])
-    last_name = StringField('Last Name', validators=[InputRequired(),Length(min=1)])
-    email = EmailField('Email', validators=[DataRequired(),Length(min=6, max=35)])
+    first_name = StringField('First Name', validators=[Length(min=1)])
+    last_name = StringField('Last Name', validators=[Length(min=1)])
+    email = EmailField('Email', validators=[Length(min=6, max=35)])
+    action = SelectField('Action', choices = ['Search', 'Sign up', 'Delete'], validators = [InputRequired()])
+    submit = SubmitField('Submit')
+
+class SellerForm(FlaskForm):
+    charity_name = StringField('Charity Name', validators=[Length(min=1)])
+    email = EmailField('Email', validators=[Length(min=6, max=35)])
     action = SelectField('Action', choices = ['Search', 'Sign up', 'Delete'], validators = [InputRequired()])
     submit = SubmitField('Submit')
 
@@ -45,8 +56,9 @@ class BetterDecimalField(DecimalField):
 
 class ProductForm(FlaskForm):
     product_name = StringField('Product Name', validators=[InputRequired(),Length(min=1)])
-    price = BetterDecimalField('Price', round_always=True, validators=[DataRequired(), NumberRange(min=0, max=10000)])
-    inventory = IntegerField('Number in inventory', validators=[DataRequired(), Length(min=1)])
-    image = StringField('Image URL', validators=[DataRequired()])
+    price = BetterDecimalField('Price', round_always=True, validators=[NumberRange(min=0, max=10000)])
+    inventory = IntegerField('Number in inventory', validators=[Length(min=1)])
+    image = StringField('Image URL')
+    seller_no = StringField('Seller No')
     action = SelectField('Action', choices = ['Search', 'Create', 'Delete'], validators = [InputRequired()])
     submit = SubmitField('Submit')

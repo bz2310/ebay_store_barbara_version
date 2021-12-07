@@ -1,6 +1,5 @@
-DROP DATABASE IF EXISTS UsersInfo;
-CREATE DATABASE UsersInfo;
-USE UsersInfo;
+CREATE DATABASE IF NOT EXISTS CharityStoreDB;
+USE CharityStoreDB;
 DROP TABLE IF EXISTS `UsersInfo`;
 CREATE TABLE `UsersInfo` (
     `user_no` text,

@@ -18,21 +18,21 @@ class UserResource(BaseRDBApplicationResource):
 
     @classmethod
     def get_all_user_data(cls):
-        res = RDBService.get_full_table("UsersInfo", "UsersInfo")
+        res = RDBService.get_full_table("CharityStoreDB", "UsersInfo")
         return res
 
     @classmethod
     def get_select_user_data(cls, template):
-        res = RDBService.find_by_template("UsersInfo", "UsersInfo", template)
+        res = RDBService.find_by_template("CharityStoreDB", "UsersInfo", template)
         return res
 
     @classmethod
     def create_user(cls, data):
-        res = RDBService.create("UsersInfo", "UsersInfo", data)
+        res = RDBService.create("CharityStoreDB", "UsersInfo", data)
         return res
 
     @classmethod
     def delete_user(cls, data):
-        res1 = RDBService.find_by_template("UsersInfo", "UsersInfo", data)
-        res = RDBService.delete("UsersInfo", "UsersInfo", data)
+        res1 = RDBService.find_by_template("CharityStoreDB", "UsersInfo", data)
+        res = RDBService.delete("CharityStoreDB", "UsersInfo", data)
         return res1

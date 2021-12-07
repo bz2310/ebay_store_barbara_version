@@ -8,19 +8,13 @@
         <h1><a href={{ url_for("index") }}>Back To Our Ebay Store</a></h1>
       <hr>
 
-    <h2>Signup for Account</h2>
+    <h2>Apply to become a seller!</h2>
     <form action="" method="post">
         <p>
-            {{ form.first_name.label }}<br>
-            {{ form.first_name(size=32) }}
+            {{ form.charity_name.label }}<br>
+            {{ form.charity_name(size=32) }}
         </p>
 
-    <p>
-            {{ form.last_name.label }}<br>
-            {{ form.last_name(size=32) }}
-        </p>
-
-        <p>
     <p>
             {{ form.email.label }}<br>
             {{ form.email(size=32) }}

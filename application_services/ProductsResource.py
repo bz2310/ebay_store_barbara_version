@@ -18,20 +18,26 @@ class ProductResource(BaseRDBApplicationResource):
 
     @classmethod
     def get_all_product_data(cls):
-        res = RDBService.get_full_table("ProductsInfo", "ProductsInfo")
+        res = RDBService.get_full_table("CharityStoreDB", "ProductsInfo")
         return res
 
     @classmethod
     def get_select_product_data(cls, template):
-        res = RDBService.find_by_template("ProductsInfo", "ProductsInfo", template)
+        res = RDBService.find_by_template("CharityStoreDB", "ProductsInfo", template)
         return res
 
     @classmethod
     def create_product(cls, data):
-        res = RDBService.create("ProductsInfo", "ProductsInfo", data)
+        res = RDBService.create("CharityStoreDB", "ProductsInfo", data)
         return res
 
     @classmethod
-    def delete_product(cls, product_no):
-        res = RDBService.delete("ProductsInfo", "ProductsInfo", product_no)
+    def delete_product(cls, data):
+        res1 = RDBService.find_by_template("CharityStoreDB", "ProductsInfo", data)
+        res = RDBService.delete("CharityStoreDB", "ProductsInfo", data)
+        return res1
+
+    @classmethod
+    def find_related_seller(cls, args_list):
+        res = RDBService.get_by_foreign_id('CharityStoreDB', 'ProductsInfo', 'SellersInfo', args_list)
         return res
