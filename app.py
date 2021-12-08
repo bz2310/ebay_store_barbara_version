@@ -1,7 +1,6 @@
 from __future__ import print_function
 
 from flask import Flask, Response, request, render_template, redirect, url_for
-from flask_s3 import FlaskS3
 from flask_cors import CORS
 from flask_dance.contrib.google import make_google_blueprint, google
 import json
@@ -39,12 +38,6 @@ blueprint = make_google_blueprint(client_id=client_id, client_secret=client_secr
 app.register_blueprint(blueprint, url_prefix='/login')
 
 CORS(app)
-
-s3 = FlaskS3()
-def start_app():
-    app = Flask(__name__)
-    s3.init_app(app)
-    return app
 """
 ********************
 OAUTH + HOME PAGE SECTION
@@ -62,6 +55,8 @@ def index(page=1):
     print('page: %s'%page)
     perpage = 3
     products = ProductResource.get_all_product_data()
+    print(products)
+    print(products[0])
     max_page = np.ceil(len(products) / perpage)
     print("max page: %s"%max_page)
     print(products)
@@ -521,7 +516,7 @@ def seller_signup():
         res = create_and_get_seller()
 
         ## send SNS notification for new product
-        publish_note("New seller applied to become a partner charity. Reach out to them to send an application: %s" % print_dict(data))
+        publish_note("New seller applied to become a partner charity. Reach out to them to send an application: %s" % print_dict(newdict))
 
         return json_to_html(res, 'Created following seller:')
 

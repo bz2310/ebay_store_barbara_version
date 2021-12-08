@@ -12,7 +12,7 @@ def get_db_info():
     db_host = os.environ.get("DBHOST", None)
     db_user = os.environ.get("DBUSER", None)
     db_password = os.environ.get("DBPASSWORD", None)
-
+    db_host = None
     if db_host is not None:
         db_info = {
             "host": db_host,
@@ -22,9 +22,10 @@ def get_db_info():
         }
     else:
         db_info = {
-            "host": "localhost",
-            "user": "barbara",
-            "password": "password",
+            'host': 'charitystoredb.cchzjvmkb07e.us-east-1.rds.amazonaws.com',
+            'port':3306,
+            "user":'admin',
+            'password':'buckets1',
             "cursorclass": pymysql.cursors.DictCursor
         }
 

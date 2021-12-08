@@ -79,7 +79,8 @@ class RDBService:
         for arg in args_list:
             print(arg)
             field1, field2, val = arg
-            where_clauses.append(" where (" + db_schema + "." + table_name2 + "." + field2 + " = " + db_schema + "." + table_name1 + "." + field1 + \
+            where_clauses.append(" where (" + db_schema + "." + table_name2 + "." + field2 + " = " + \
+                                 db_schema + "." + table_name1 + "." + field1 + \
                                  ' and ' + db_schema + "." + table_name1 + "." + field1 + " = " + val + ")"
                                  )
 
