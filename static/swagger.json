@@ -1,0 +1,12 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "description": "charity",
+      "version": "1.0.0",
+      "title": "charity-store",
+      "license": {
+        "name": "MIT",
+        "url": "https://opensource.org/licenses/MIT"
+        }
+    }
+}

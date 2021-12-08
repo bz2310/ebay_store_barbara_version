@@ -3,6 +3,8 @@ from __future__ import print_function
 from flask import Flask, Response, request, render_template, redirect, url_for
 from flask_cors import CORS
 from flask_dance.contrib.google import make_google_blueprint, google
+from flasgger import Swagger
+from flask_swagger_ui import get_swaggerui_blueprint
 import json
 import logging
 import numpy as np
@@ -38,6 +40,23 @@ blueprint = make_google_blueprint(client_id=client_id, client_secret=client_secr
 app.register_blueprint(blueprint, url_prefix='/login')
 
 CORS(app)
+####### SWAGGER #########
+@app.route('/static/<path:path>')
+def send_static(path):
+    return send_from_directory('static', path)
+
+SWAGGER_URL = '/swagger'
+API_URL = '/static/swagger.json'
+SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
+    SWAGGER_URL,
+    API_URL,
+    config={
+        'app_name': "Charity-Store"
+    }
+)
+app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_URL)
+
+#########################
 """
 ********************
 OAUTH + HOME PAGE SECTION
