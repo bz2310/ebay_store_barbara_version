@@ -311,6 +311,7 @@ def admin_products():
 Products helper function that also serves up the API routing
 '''
 @app.route('/api/products/<product_no>', methods = ['GET', 'POST', 'DELETE', 'PUT'])
+
 @app.route('/api/products', methods = ['GET', 'DELETE'])
 def create_and_get_product(product_no=None):
     print("Request method in create_and_get_product: %s"%request.method)
