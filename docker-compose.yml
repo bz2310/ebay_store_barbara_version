@@ -1,0 +1,20 @@
+version: "2"
+services:
+  app:
+    build: ./
+    links:
+      - db
+    ports:
+      - "5000:5000"
+  db:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 'buckets1'
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - my-db:/var/lib/mysql
+volumes:
+  my-db:
