@@ -5,7 +5,12 @@ from flask_cors import CORS
 from flask_dance.contrib.google import make_google_blueprint, google
 from flasgger import Swagger
 from flask_swagger_ui import get_swaggerui_blueprint
+import asyncio
 import json
+#import simple_async
+from datetime import datetime
+import grequests
+import requests
 import logging
 import numpy as np
 
@@ -542,6 +547,25 @@ def seller_signup():
 
     form = SellerSignupForm()
     return render_template('sellersignup.html', form=form)
+
+
+
+######## SERVICE COMPOSITION #############
+@app.route('/api/compositions/1', methods=['GET', 'POST'])
+def synchronous_composition():          # SERIES   
+    pass # call simple_async.t2() 
+
+
+
+
+
+@app.route('/api/compositions/2', methods=['GET', 'POST'])
+def asynchronous_composition():          # PARALLELISM USING ASYNCIO
+    pass
+    #call simple_async.t1()
+    #    return simple_async.t1()
+
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000, debug=True)
