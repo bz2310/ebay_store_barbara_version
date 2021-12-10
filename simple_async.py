@@ -17,13 +17,12 @@ def t1():                       # Get all product names/ total money
     total_money_per_seller = {}
     s = datetime.now()
     rs = (grequests.get(u) for u in prod_urls)
-    print("rs",rs)
+    #print("rs",rs)
     x = grequests.map(rs)
-    print("x", x)
+    #print("x", x)
     e = datetime.now()
 
-    print("Asynchronous (Parallel) Composition")
-    print("Elapsed time = ", e - s)
+
 
     for r in x:
         if r is None:
@@ -39,8 +38,12 @@ def t1():                       # Get all product names/ total money
             charity_store_valuation += p_total_val
             total_money_per_seller[p['product_no']] = p_total_val
 
+    print("Asynchronous (Parallel) Composition")
+    print("Elapsed time = ", e - s)
     print(total_money_per_seller)
     print("The charity store now has a valuation of ", charity_store_valuation, "!")
+
+    return (total_money_per_seller, charity_store_valuation)
 
 
 
@@ -71,6 +74,8 @@ def t2():
             #print('---------------------')  
     print(total_money_per_seller)
     print("The charity store now has a valuation of ", charity_store_valuation, "!")
+
+    return (total_money_per_seller, charity_store_valuation)
 
 t1()
 t2()
