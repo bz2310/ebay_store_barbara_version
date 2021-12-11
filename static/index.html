@@ -36,7 +36,8 @@
    	   	  <div class="prices">
    	   	  	<div class="amount">${{ product.price }}</div>
    	   	  </div>
-   	   </div>
+		</div>
+		<div class="links"><a href='/api/products/reviews/{{product.product_no}}/{{product.product_name}}' }}>See Reviews</a></div>  
 {% endfor %}
 
       {% if page < max_page %} <div class="links"><a href="{{ url_for('index', page=page+1) }}">Next products >></a></div>{% else %}{% endif %}

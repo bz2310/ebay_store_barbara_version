@@ -12,6 +12,7 @@ import numpy as np
 from application_services.UsersResource.user_service import UserResource
 from application_services.ProductsResource import ProductResource
 from application_services.SellerResource import SellerResource
+from dynamo import dynamodb as db
 
 from static.forms import AdminForm,SignupForm,ProductForm,SellerForm,SellerSignupForm
 from werkzeug.datastructures import ImmutableMultiDict
@@ -384,6 +385,62 @@ def create_and_get_product(product_no=None):
         res = ProductResource.create_product(data)
         rsp = Response(json.dumps(res), status=200, content_type="application/json")
         return rsp
+
+"""
+********************
+PRODUCTS REVIEWS SECTION
+********************
+"""
+
+@app.route('/api/products/reviews/<product_no>/<product_name>', methods = ['GET', 'POST'])
+def reviews(product_no=None, product_name=None):
+    if request.method == 'GET':
+        res = db.find_by_template("reviews", {
+            "product_no": product_no
+        })
+        rsp = Response(json.dumps(res), status=200, content_type="application/json")
+        return render_template("reviews.html", rev= res["Items"], product_no = product_no, product_name = product_name)
+    elif request.method == 'POST':
+        name = request.form["name"]
+        comment = request.form["comment"]
+
+
+        ## check if data dictionary is long enough
+        if not name or not comment:
+            rsp = Response("Review not created successfully, please fill in all the data", status=400,
+                           content_type='application/json')
+            return rsp
+        res = db.put_comment("reviews", name, comment, product_no)
+        rsp = Response(json.dumps(res), status=201, content_type="application/json")
+        ## send SNS notification for new product
+        publish_note("New review created")
+        return redirect(url_for('reviews', product_no= product_no, product_name= product_name))
+
+
+@app.route('/api/products/reviews/<product_no>/<product_name>/<comment_id>', methods = ['POST'])
+def reviews_response(product_no = None, product_name =None, comment_id = None):
+    if request.method == 'POST':
+        name = request.form['name']
+        response = request.form['response']
+
+        ## check if data dictionary is long enough
+        if not name or not response:
+            rsp = Response("Response not created successfully, please fill in all the data", status=400,
+                           content_type='application/json')
+            return rsp
+        res = db.add_response("reviews", comment_id, name, response)
+        if len(res) == 0:
+            rsp = Response('Response created unsuccefully. Please try again!', status=404, content_type='application/json')
+        else:
+            rsp = Response(json.dumps(res), status=200, content_type="application/json")
+            publish_note("New response created")
+        return redirect(url_for('reviews', product_no= product_no, product_name= product_name))
+
+    
+
+
+
+
 """
 ********************
 SELLERS SECTION

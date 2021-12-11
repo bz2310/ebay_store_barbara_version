@@ -192,3 +192,7 @@ hr{
 	font-weight: 600;
 	color: #202020;
 }
+
+.reviews p {
+	font-size: 30px;
+}
