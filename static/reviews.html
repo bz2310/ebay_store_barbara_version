@@ -3,6 +3,7 @@
  </head>
  <body style = "font-size: 30px">
         <h1>Reviews of {{product_name}}</h1>
+        <h1><a href={{ url_for("index") }}>Back To Our Ebay Store</a></h1>
         {% for r in rev %}
         <p><b>{{r["name"]}}</b><i> on {{r["datetime"]}}:</i> {{r["comment"]}}</p>
             {% for res in r["responses"] %}
