@@ -3,7 +3,14 @@ from __future__ import print_function
 from flask import Flask, Response, request, render_template, redirect, url_for
 from flask_cors import CORS
 from flask_dance.contrib.google import make_google_blueprint, google
+from flasgger import Swagger
+from flask_swagger_ui import get_swaggerui_blueprint
+import asyncio
 import json
+#import simple_async
+from datetime import datetime
+import grequests
+import requests
 import logging
 import numpy as np
 
@@ -47,6 +54,23 @@ blueprint = make_google_blueprint(client_id=client_id, client_secret=client_secr
 app.register_blueprint(blueprint, url_prefix='/login')
 
 CORS(app)
+####### SWAGGER #########
+@app.route('/static/<path:path>')
+def send_static(path):
+    return send_from_directory('static', path)
+
+SWAGGER_URL = '/swagger'
+API_URL = '/static/swagger.json'
+SWAGGERUI_BLUEPRINT = get_swaggerui_blueprint(
+    SWAGGER_URL,
+    API_URL,
+    config={
+        'app_name': "Charity-Store"
+    }
+)
+app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_URL)
+
+#########################
 """
 ********************
 OAUTH + HOME PAGE SECTION
@@ -304,6 +328,7 @@ def admin_products():
 Products helper function that also serves up the API routing
 '''
 @app.route('/api/products/<product_no>', methods = ['GET', 'POST', 'DELETE', 'PUT'])
+
 @app.route('/api/products', methods = ['GET', 'DELETE'])
 def create_and_get_product(product_no=None):
     print("Request method in create_and_get_product: %s"%request.method)
@@ -534,6 +559,25 @@ def seller_signup():
 
     form = SellerSignupForm()
     return render_template('sellersignup.html', form=form)
+
+
+
+######## SERVICE COMPOSITION #############
+@app.route('/api/compositions/1', methods=['GET', 'POST'])
+def synchronous_composition():          # SERIES   
+    pass # call simple_async.t2() 
+
+
+
+
+
+@app.route('/api/compositions/2', methods=['GET', 'POST'])
+def asynchronous_composition():          # PARALLELISM USING ASYNCIO
+    pass
+    #call simple_async.t1()
+    #    return simple_async.t1()
+
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000, debug=True)

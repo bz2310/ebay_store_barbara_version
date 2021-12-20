@@ -1,0 +1,176 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "description": "charity",
+        "version": "1.0.0",
+        "title": "charity-store",
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        }
+    },
+    "servers": [
+        {
+            "url": "/"
+        }
+    ],
+    "tags": [
+        {
+            "name": "Charity Store- Products",
+            "description": "Open API for requesting and return Product requests"
+        }
+    ],
+    "paths": {
+        "/api/products": {
+            "get": {
+                "tags": [
+                    "Charity Store- Products"
+                ],
+                "summary": "Returns Products in Product Database",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/components/schemas/id"
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Charity Store- Products"
+                ],
+                "summary": "Creates a new Product",
+                "requestBody": {
+                    "description": "Charity Request Post Object",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProductRequest"
+                            }
+                        }
+                    }
+                },
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "201": {
+                        "description": "OK. New Products created with characteristics.",
+                        "schema": {
+                            "$ref": "#/components/schemas/id"
+                        }
+                    },
+                    "400": {
+                        "description": "Failed. Products not created successfully."
+                    }
+                }
+            }
+        },
+        "/api/products/{id}": {
+            "parameters": [
+                {
+                  "name": "id",
+                  "in": "path",
+                  "required": true,
+                  "description": "ID of the product that we want to get",
+                  "type": "string",
+                  "schema": {
+                  "type": "integer",
+                  "minimum": 1
+                  }
+                }
+              ],
+            "get": {
+                "tags": [
+                    "Charity Store- Products"
+                ],
+                "summary": "Get Products by id",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/components/schemas/id"
+                        }
+                    },
+                    "404": {
+                        "description": "Products not found"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete Products Request by ID",
+                "tags": [
+                    "Charity Store- Products"
+                ],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "required": true,
+                        "description": "Charity Request Id",
+                        "schema": {
+                            "$ref": "#/components/schemas/id"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/components/schemas/id"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "id": {
+                "properties": {
+                    "uuid": {
+                        "type": "string"
+                    }
+                }
+            },
+            "ProductRequest": {
+                "type": "object",
+                "properties": {
+                    "product_no": {
+                        "type": "string",
+                        "format": "number"
+                    },
+                    "product_name": {
+                        "type": "string",
+                        "format": "string"
+                    },
+                    "price": {
+                        "type": "string",
+                        "format": "float"
+                    },
+                    "inventory": {
+                        "type": "string",
+                        "format": "number"
+                    },
+                    "description": {
+                        "type": "string",
+                        "format": "string"
+                    },
+                    "image": {
+                        "type": "string",
+                        "format": "string"
+                    },
+                    "seller_no": {
+                        "type": "string",
+                        "format": "number"
+                    }
+                }
+            }
+        }
+    }
+}
