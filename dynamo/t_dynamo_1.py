@@ -45,9 +45,9 @@ def t5():
 
 def t6():
 
-    comment_id = "984b90ff-0887-4291-afc4-7854bf452ac8"
-    original_comment = db.get_item("comments",{"comment_id": comment_id})
-    original_version_id = original_comment["version_id"]
+    comment_id = "411d2caf-975f-4475-b5c8-e3c46384777e"
+    original_comment = db.get_item("reviews",{"comment_id": comment_id})
+    #original_version_id = original_comment["version_id"]
 
     new_comment = copy.deepcopy(original_comment)
 
@@ -72,11 +72,11 @@ def t7():
 
 
 # t1()
-t2()
+# t2()
 # t3()
 # t4()
 # t5()
-# t6()
+t6()
 # t7()
 # t3()
 
