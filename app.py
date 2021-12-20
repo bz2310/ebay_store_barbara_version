@@ -23,11 +23,20 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 app = Flask(__name__, template_folder='static')
-app.config['FLASKS3_BUCKET_NAME'] = 'charitystore'
-app.config['AWS_ACCESS_KEY_ID'] = 'AKIAT5PRHNCLBWVMMBRD'
-app.config['AWS_SECRET_ACCESS_KEY'] = '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'
+app.config['FLASKS3_BUCKET_NAME'] = 'charitystore-s3'
+app.config['AWS_ACCESS_KEY_ID'] = 'AKIA57OPPHQSGKNUX33P'
+app.config['AWS_SECRET_ACCESS_KEY'] = '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'
 app.debug = True
-app.secret_key = 'SqIoUWyqYETxs8IPQkRjvSWrDqn/2VSFXzVGRoHW'
+app.secret_key = '2M2585rGnbfrk/roQlCOuQd7C55YTO+E3YVbvhtx'
+from flask import Flask
+from flask_s3 import FlaskS3
+
+s3 = FlaskS3()
+
+def start_app():
+    app = Flask(__name__)
+    s3.init_app(app)
+    return app
 
 import os
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
@@ -43,6 +52,9 @@ CORS(app)
 OAUTH + HOME PAGE SECTION
 ********************
 """
+
+
+
 @app.before_request
 def security_before_request():
     security_status = check_security(request, google, app)
