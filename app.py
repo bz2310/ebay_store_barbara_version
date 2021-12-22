@@ -130,7 +130,11 @@ def signup():
 
     if request.method == 'POST':
 
-        newform = request.form
+        newform = None
+        if not len(request.data) == 0:
+            newform = request.data
+        else:
+            newform = request.form
         newdict = {}
 
         for k,v in newform.items():
@@ -171,7 +175,11 @@ def admin_accounts():
     ## All submissions are POSTs, we need to change it to the
     ## needed action for the create_and_get_user function
     if request.method == 'POST':
-        newform = request.form
+        newform = None
+        if not len(request.data) == 0:
+            newform = request.data
+        else:
+            newform = request.form
         newdict = {}
         for k,v in newform.items():
             if 'action' in k:
@@ -296,7 +304,11 @@ def admin_products():
     ## All submissions are POSTs, we need to change it to the
     ## needed action for the create_and_get_user function
     if request.method == 'POST':
-        newform = request.form
+        newform = None
+        if not len(request.data) == 0:
+            newform = request.data
+        else:
+            newform = request.form
         newdict = {}
         for k,v in newform.items():
             if 'action' in k:
@@ -438,7 +450,11 @@ def admin_sellers():
     ## All submissions are POSTs, we need to change it to the
     ## needed action for the create_and_get_user function
     if request.method == 'POST':
-        newform = request.form
+        newform = None
+        if not len(request.data) == 0:
+            newform=request.data
+        else:
+            newform = request.form
         newdict = {}
         for k,v in newform.items():
             if 'action' in k:
@@ -541,8 +557,11 @@ Does not require Oauth to sign up to be a user
 def seller_signup():
 
     if request.method == 'POST':
-
-        newform = request.form
+        newform = None
+        if not len(request.data) == 0:
+            newform = request.data
+        else:
+            newform = request.form
         newdict = {}
 
         for k,v in newform.items():
