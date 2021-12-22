@@ -132,7 +132,7 @@ def signup():
 
         newform = None
         if not len(request.data) == 0:
-            newform = request.data
+            newform=json.loads(request.data)
         else:
             newform = request.form
         newdict = {}
@@ -177,7 +177,7 @@ def admin_accounts():
     if request.method == 'POST':
         newform = None
         if not len(request.data) == 0:
-            newform = request.data
+            newform=json.loads(request.data)
         else:
             newform = request.form
         newdict = {}
@@ -306,7 +306,7 @@ def admin_products():
     if request.method == 'POST':
         newform = None
         if not len(request.data) == 0:
-            newform = request.data
+            newform=json.loads(request.data)
         else:
             newform = request.form
         newdict = {}
@@ -559,7 +559,7 @@ def seller_signup():
     if request.method == 'POST':
         newform = None
         if not len(request.data) == 0:
-            newform = request.data
+            newform=json.loads(request.data)
         else:
             newform = request.form
         newdict = {}

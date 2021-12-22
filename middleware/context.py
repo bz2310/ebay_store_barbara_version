@@ -2,7 +2,7 @@ import os
 import pymysql
 
 def email_keygen():
-    return 'c784699b774e4bcc89ef39708249263f'
+    return '96273d64b6f0470093ff840964790954'
 
 def google_auth_keygen():
     return '891041318318-ocp6i17mcevembkehugg0j0s0f9ni40u.apps.googleusercontent.com', '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'
