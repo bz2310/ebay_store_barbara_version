@@ -9,7 +9,7 @@ import asyncio
 import json
 #import simple_async
 from datetime import datetime
-import grequests
+#import grequests
 import requests
 import logging
 import numpy as np
@@ -30,11 +30,16 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 app = Flask(__name__, template_folder='static')
-app.config['FLASKS3_BUCKET_NAME'] = 'charitystore'
-app.config['AWS_ACCESS_KEY_ID'] = 'AKIAT5PRHNCLBWVMMBRD'
-app.config['AWS_SECRET_ACCESS_KEY'] = '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'
+app.config['FLASKS3_BUCKET_NAME'] = 'charitystore-s3'
+app.config['S3_BUCKET_NAME'] = 'charitystore-s3'
+app.config['AWS_ACCESS_KEY_ID'] = 'AKIA57OPPHQSGKNUX33P'
+app.config['AWS_SECRET_ACCESS_KEY'] = '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'
 app.debug = True
-app.secret_key = 'SqIoUWyqYETxs8IPQkRjvSWrDqn/2VSFXzVGRoHW'
+app.secret_key = '2M2585rGnbfrk/roQlCOuQd7C55YTO+E3YVbvhtx'
+
+####### comment out for elastic beanstalk zip file upload
+#from flask_s3 import FlaskS3
+#s3 = FlaskS3(app)
 
 import os
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
@@ -67,6 +72,9 @@ app.register_blueprint(SWAGGERUI_BLUEPRINT, url_prefix=SWAGGER_URL)
 OAUTH + HOME PAGE SECTION
 ********************
 """
+
+
+
 @app.before_request
 def security_before_request():
     security_status = check_security(request, google, app)
@@ -122,7 +130,11 @@ def signup():
 
     if request.method == 'POST':
 
-        newform = request.form
+        newform = None
+        if not len(request.data) == 0:
+            newform = request.data
+        else:
+            newform = request.form
         newdict = {}
 
         for k,v in newform.items():
@@ -163,7 +175,11 @@ def admin_accounts():
     ## All submissions are POSTs, we need to change it to the
     ## needed action for the create_and_get_user function
     if request.method == 'POST':
-        newform = request.form
+        newform = None
+        if not len(request.data) == 0:
+            newform = request.data
+        else:
+            newform = request.form
         newdict = {}
         for k,v in newform.items():
             if 'action' in k:
@@ -221,7 +237,12 @@ def create_and_get_user(user_no=None):
         return rsp
 
     elif request.method == 'POST':  # create that user
-        data = request.form.to_dict()
+
+        data = None
+        try:
+            data = json.loads(request.data)
+        except:
+            data = request.form.to_dict()
 
         ## check if data dictionary is long enough
         if len(set(['first_name', 'last_name', 'email']) - set(
@@ -283,7 +304,11 @@ def admin_products():
     ## All submissions are POSTs, we need to change it to the
     ## needed action for the create_and_get_user function
     if request.method == 'POST':
-        newform = request.form
+        newform = None
+        if not len(request.data) == 0:
+            newform = request.data
+        else:
+            newform = request.form
         newdict = {}
         for k,v in newform.items():
             if 'action' in k:
@@ -316,8 +341,7 @@ def admin_products():
 Products helper function that also serves up the API routing
 '''
 @app.route('/api/products/<product_no>', methods = ['GET', 'POST', 'DELETE', 'PUT'])
-
-@app.route('/api/products', methods = ['GET', 'DELETE'])
+@app.route('/api/products', methods = ['GET', 'DELETE','POST'])
 def create_and_get_product(product_no=None):
     print("Request method in create_and_get_product: %s"%request.method)
 
@@ -341,10 +365,17 @@ def create_and_get_product(product_no=None):
         return rsp
 
     elif request.method == 'POST':  # create that product
-        data = request.form.to_dict()
+        data = None
+        try:
+            data = json.loads(request.data)
+        except:
+            data = request.form.to_dict()
+        print(data)
 
         ## check if data dictionary is long enough
-        if len(set(['product_name', 'price', 'inventory','description', 'image', 'product_no', 'seller_no']) - set(list(data.keys()))) > 0:
+        missing_data = list(set(['product_name', 'price', 'inventory', 'description', 'image', 'product_no', 'seller_no']) - set(
+            list(data.keys())))
+        if len(missing_data) > 0:
             rsp = Response("Product not created successfully, please fill in all the data", status=400,
                            content_type='application/json')
             return rsp
@@ -419,7 +450,11 @@ def admin_sellers():
     ## All submissions are POSTs, we need to change it to the
     ## needed action for the create_and_get_user function
     if request.method == 'POST':
-        newform = request.form
+        newform = None
+        if not len(request.data) == 0:
+            newform=request.data
+        else:
+            newform = request.form
         newdict = {}
         for k,v in newform.items():
             if 'action' in k:
@@ -477,7 +512,12 @@ def create_and_get_seller(seller_no=None):
         return rsp
 
     elif request.method == 'POST':  # create that product
-        data = request.form.to_dict()
+
+        data = None
+        try:
+            data = json.loads(request.data)
+        except:
+            data = request.form.to_dict()
 
         ## check if data dictionary is long enough
         if len(set(['charity_name', 'email']) - set(list(data.keys()))) > 0:
@@ -517,8 +557,11 @@ Does not require Oauth to sign up to be a user
 def seller_signup():
 
     if request.method == 'POST':
-
-        newform = request.form
+        newform = None
+        if not len(request.data) == 0:
+            newform = request.data
+        else:
+            newform = request.form
         newdict = {}
 
         for k,v in newform.items():
