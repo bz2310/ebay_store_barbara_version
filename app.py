@@ -9,7 +9,7 @@ import asyncio
 import json
 #import simple_async
 from datetime import datetime
-import grequests
+#import grequests
 import requests
 import logging
 import numpy as np
@@ -31,19 +31,15 @@ logger.setLevel(logging.INFO)
 
 app = Flask(__name__, template_folder='static')
 app.config['FLASKS3_BUCKET_NAME'] = 'charitystore-s3'
+app.config['S3_BUCKET_NAME'] = 'charitystore-s3'
 app.config['AWS_ACCESS_KEY_ID'] = 'AKIA57OPPHQSGKNUX33P'
 app.config['AWS_SECRET_ACCESS_KEY'] = '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'
 app.debug = True
 app.secret_key = '2M2585rGnbfrk/roQlCOuQd7C55YTO+E3YVbvhtx'
-from flask import Flask
-from flask_s3 import FlaskS3
 
-s3 = FlaskS3()
-
-def start_app():
-    app = Flask(__name__)
-    s3.init_app(app)
-    return app
+####### comment out for elastic beanstalk zip file upload
+#from flask_s3 import FlaskS3
+#s3 = FlaskS3(app)
 
 import os
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
@@ -233,7 +229,12 @@ def create_and_get_user(user_no=None):
         return rsp
 
     elif request.method == 'POST':  # create that user
-        data = request.form.to_dict()
+
+        data = None
+        try:
+            data = json.loads(request.data)
+        except:
+            data = request.form.to_dict()
 
         ## check if data dictionary is long enough
         if len(set(['first_name', 'last_name', 'email']) - set(
@@ -328,8 +329,7 @@ def admin_products():
 Products helper function that also serves up the API routing
 '''
 @app.route('/api/products/<product_no>', methods = ['GET', 'POST', 'DELETE', 'PUT'])
-
-@app.route('/api/products', methods = ['GET', 'DELETE'])
+@app.route('/api/products', methods = ['GET', 'DELETE','POST'])
 def create_and_get_product(product_no=None):
     print("Request method in create_and_get_product: %s"%request.method)
 
@@ -353,10 +353,17 @@ def create_and_get_product(product_no=None):
         return rsp
 
     elif request.method == 'POST':  # create that product
-        data = request.form.to_dict()
+        data = None
+        try:
+            data = json.loads(request.data)
+        except:
+            data = request.form.to_dict()
+        print(data)
 
         ## check if data dictionary is long enough
-        if len(set(['product_name', 'price', 'inventory','description', 'image', 'product_no', 'seller_no']) - set(list(data.keys()))) > 0:
+        missing_data = list(set(['product_name', 'price', 'inventory', 'description', 'image', 'product_no', 'seller_no']) - set(
+            list(data.keys())))
+        if len(missing_data) > 0:
             rsp = Response("Product not created successfully, please fill in all the data", status=400,
                            content_type='application/json')
             return rsp
@@ -489,7 +496,12 @@ def create_and_get_seller(seller_no=None):
         return rsp
 
     elif request.method == 'POST':  # create that product
-        data = request.form.to_dict()
+
+        data = None
+        try:
+            data = json.loads(request.data)
+        except:
+            data = request.form.to_dict()
 
         ## check if data dictionary is long enough
         if len(set(['charity_name', 'email']) - set(list(data.keys()))) > 0:

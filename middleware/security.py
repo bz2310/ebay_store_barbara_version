@@ -24,5 +24,6 @@ def check_email(email):
         "https://emailvalidation.abstractapi.com/v1/?api_key=" + apiKey + "&email=" + email)
 
     print("Email verification result = \n", "Status Code:", response.status_code, "\n", "Content:", response.content.decode('utf-8'))
+
     email_good = (response.json()['deliverability'] == 'DELIVERABLE')
     return email_good
