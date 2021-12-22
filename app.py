@@ -118,7 +118,11 @@ def signup():
 
     if request.method == 'POST':
 
-        newform = request.form
+        newform = None
+        if not len(request.data) == 0:
+            newform = request.data
+        else:
+            newform = request.form
         newdict = {}
 
         for k,v in newform.items():
@@ -159,7 +163,11 @@ def admin_accounts():
     ## All submissions are POSTs, we need to change it to the
     ## needed action for the create_and_get_user function
     if request.method == 'POST':
-        newform = request.form
+        newform = None
+        if not len(request.data) == 0:
+            newform = request.data
+        else:
+            newform = request.form
         newdict = {}
         for k,v in newform.items():
             if 'action' in k:
@@ -217,7 +225,11 @@ def create_and_get_user(user_no=None):
         return rsp
 
     elif request.method == 'POST':  # create that user
-        data = request.form.to_dict()
+        data = None
+        try:
+            data = json.loads(request.data)
+        except:
+            data = request.form.to_dict()
 
         ## check if data dictionary is long enough
         if len(set(['first_name', 'last_name', 'email']) - set(
@@ -279,7 +291,11 @@ def admin_products():
     ## All submissions are POSTs, we need to change it to the
     ## needed action for the create_and_get_user function
     if request.method == 'POST':
-        newform = request.form
+        newform = None
+        if not len(request.data) == 0:
+            newform = request.data
+        else:
+            newform = request.form
         newdict = {}
         for k,v in newform.items():
             if 'action' in k:
@@ -337,7 +353,11 @@ def create_and_get_product(product_no=None):
         return rsp
 
     elif request.method == 'POST':  # create that product
-        data = request.form.to_dict()
+        data = None
+        try:
+            data = json.loads(request.data)
+        except:
+            data = request.form.to_dict()
 
         ## check if data dictionary is long enough
         if len(set(['product_name', 'price', 'inventory','description', 'image', 'product_no', 'seller_no']) - set(list(data.keys()))) > 0:
@@ -401,8 +421,13 @@ def reviews(product_no=None, product_name=None):
         rsp = Response(json.dumps(res), status=200, content_type="application/json")
         return render_template("reviews.html", rev= res["Items"], product_no = product_no, product_name = product_name)
     elif request.method == 'POST':
-        name = request.form["name"]
-        comment = request.form["comment"]
+        data = None
+        try:
+            data = json.loads(request.data)
+        except:
+            data = request.form.to_dict()
+        name = data["name"]
+        comment = data["comment"]
 
 
         ## check if data dictionary is long enough
@@ -420,8 +445,13 @@ def reviews(product_no=None, product_name=None):
 @app.route('/api/products/reviews/<product_no>/<product_name>/<comment_id>', methods = ['POST'])
 def reviews_response(product_no = None, product_name =None, comment_id = None):
     if request.method == 'POST':
-        name = request.form['name']
-        response = request.form['response']
+        data = None
+        try:
+            data = json.loads(request.data)
+        except:
+            data = request.form.to_dict()
+        name = data['name']
+        response = data['response']
 
         ## check if data dictionary is long enough
         if not name or not response:
@@ -471,7 +501,11 @@ def admin_sellers():
     ## All submissions are POSTs, we need to change it to the
     ## needed action for the create_and_get_user function
     if request.method == 'POST':
-        newform = request.form
+        newform = None
+        if not len(request.data) == 0:
+            newform = request.data
+        else:
+            newform = request.form
         newdict = {}
         for k,v in newform.items():
             if 'action' in k:
@@ -529,7 +563,11 @@ def create_and_get_seller(seller_no=None):
         return rsp
 
     elif request.method == 'POST':  # create that product
-        data = request.form.to_dict()
+        data = None
+        try:
+            data = json.loads(request.data)
+        except:
+            data = request.form.to_dict()
 
         ## check if data dictionary is long enough
         if len(set(['charity_name', 'email']) - set(list(data.keys()))) > 0:
@@ -570,7 +608,11 @@ def seller_signup():
 
     if request.method == 'POST':
 
-        newform = request.form
+        newform = None
+        if not len(request.data) == 0:
+            newform = request.data
+        else:
+            newform = request.form
         newdict = {}
 
         for k,v in newform.items():
