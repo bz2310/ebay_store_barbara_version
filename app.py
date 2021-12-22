@@ -13,7 +13,7 @@ from datetime import datetime
 import requests
 import logging
 import numpy as np
-import simple_async as sa
+#import simple_async as sa
 
 from application_services.UsersResource.user_service import UserResource
 from application_services.ProductsResource import ProductResource
