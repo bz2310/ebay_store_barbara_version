@@ -77,5 +77,5 @@ def t2():
 
     return (total_money_per_seller, charity_store_valuation)
 
-print(t1())
-print(t2())
+#print(t1())
+#print(t2())
