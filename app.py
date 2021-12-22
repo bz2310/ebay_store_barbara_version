@@ -13,6 +13,7 @@ from datetime import datetime
 import requests
 import logging
 import numpy as np
+import simple_async as sa
 
 from application_services.UsersResource.user_service import UserResource
 from application_services.ProductsResource import ProductResource
@@ -596,7 +597,8 @@ def seller_signup():
 ######## SERVICE COMPOSITION #############
 @app.route('/api/compositions/1', methods=['GET', 'POST'])
 def synchronous_composition():          # SERIES   
-    pass # call simple_async.t2() 
+    sa2 = sa.t2()
+    return sa2
 
 
 
@@ -604,7 +606,8 @@ def synchronous_composition():          # SERIES
 
 @app.route('/api/compositions/2', methods=['GET', 'POST'])
 def asynchronous_composition():          # PARALLELISM USING ASYNCIO
-    pass
+    sa1 = sa.t1()
+    return sa1
     #call simple_async.t1()
     #    return simple_async.t1()
 

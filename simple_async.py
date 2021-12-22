@@ -5,10 +5,10 @@ from datetime import datetime
 
 
 prod_urls = [
-    'http://127.0.0.1:5000/api/products/1',
-    'http://127.0.0.1:5000/api/products/2',
-    'http://127.0.0.1:5000/api/products/3',
-    'http://127.0.0.1:5000/api/products/4'
+    'http://ec2-3-137-185-6.us-east-2.compute.amazonaws.com:5000/api/products/1',
+    'http://ec2-3-137-185-6.us-east-2.compute.amazonaws.com:5000/api/products/2',
+    'http://ec2-3-137-185-6.us-east-2.compute.amazonaws.com:5000/api/products/3',
+    'http://ec2-3-137-185-6.us-east-2.compute.amazonaws.com:5000/api/products/4'
 ]
 
 
@@ -77,5 +77,5 @@ def t2():
 
     return (total_money_per_seller, charity_store_valuation)
 
-t1()
-t2()
+#print(t1())
+#print(t2())
