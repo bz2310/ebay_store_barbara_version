@@ -25,6 +25,7 @@ import pandas as pd
 from middleware.notifications import publish_note
 from middleware.security import check_security, check_email
 from middleware.context import google_auth_keygen
+from dynamo import dynamodb as db
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger()
