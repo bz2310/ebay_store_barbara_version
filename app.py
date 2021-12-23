@@ -214,7 +214,7 @@ def admin_accounts():
 Users helper function that also serves up the API routing
 '''
 @app.route('/api/users/<user_no>', methods = ['GET', 'POST', 'DELETE', 'PUT'])
-@app.route('/api/users', methods = ['GET', 'DELETE'])
+@app.route('/api/users', methods = ['GET', 'DELETE','POST'])
 def create_and_get_user(user_no=None):
     print("Request method in create_and_get_user: %s"%request.method)
 
@@ -262,7 +262,11 @@ def create_and_get_user(user_no=None):
         return rsp
 
     elif request.method == 'DELETE':
-        data = request.form.to_dict()
+        data = None
+        try:
+            data = json.loads(request.data)
+        except:
+            data = request.form.to_dict()
         res = UserResource.delete_user(data)
         rsp = Response(json.dumps(res), status=204, content_type="application/json")
         ## send SNS notification for deleting user
@@ -270,7 +274,11 @@ def create_and_get_user(user_no=None):
         return rsp
 
     elif request.method == "PUT":
-        data = request.form.to_dict()
+        data = None
+        try:
+            data = json.loads(request.data)
+        except:
+            data = request.form.to_dict()
         res = UserResource.delete_user(data)
         res = UserResource.create_user(data)
         rsp = Response(json.dumps(res), status=200, content_type="application/json")
@@ -402,7 +410,12 @@ def create_and_get_product(product_no=None):
         return rsp
 
     elif request.method == 'DELETE':
-        data = request.form.to_dict()
+        data = None
+        try:
+            data = json.loads(request.data)
+        except:
+            data = request.form.to_dict()
+        print(data)
 
         res = ProductResource.delete_product(data)
 
@@ -489,7 +502,7 @@ def admin_sellers():
 Sellers helper function that serves up API 
 '''
 @app.route('/api/sellers/<seller_no>', methods = ['GET', 'POST', 'DELETE', 'PUT'])
-@app.route('/api/sellers', methods = ['GET', 'DELETE'])
+@app.route('/api/sellers', methods = ['GET', 'DELETE','POST'])
 def create_and_get_seller(seller_no=None):
     print("Request method in create_and_get_seller: %s"%request.method)
 
@@ -537,7 +550,11 @@ def create_and_get_seller(seller_no=None):
         return rsp
 
     elif request.method == 'DELETE':
-        data = request.form.to_dict()
+        data = None
+        try:
+            data = json.loads(request.data)
+        except:
+            data = request.form.to_dict()
 
         res = SellerResource.delete_seller(data)
 
