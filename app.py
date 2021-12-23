@@ -466,7 +466,11 @@ def reviews(product_no=None, product_name=None):
         rsp = Response(json.dumps(res), status=201, content_type="application/json")
         ## send SNS notification for new product
         publish_note("New review created")
-        return redirect(url_for('reviews', product_no= product_no, product_name= product_name))
+        redir = db.find_by_template("reviews", {
+            "product_no": product_no
+        })
+
+        return render_template("reviews.html", rev= redir["Items"], product_no = product_no, product_name = product_name)
 
 
 @app.route('/api/products/reviews/<product_no>/<product_name>/<comment_id>', methods = ['POST'])
@@ -491,7 +495,11 @@ def reviews_response(product_no = None, product_name =None, comment_id = None):
         else:
             rsp = Response(json.dumps(res), status=200, content_type="application/json")
             publish_note("New response created")
-        return redirect(url_for('reviews', product_no= product_no, product_name= product_name))
+        redir = db.find_by_template("reviews", {
+            "product_no": product_no
+        })
+
+        return render_template("reviews.html", rev= redir["Items"], product_no = product_no, product_name = product_name)
 
 """
 ********************
