@@ -95,8 +95,9 @@ def index(page=1):
     print("max page: %s"%max_page)
     print(products)
     paginated_products = products[(page-1)*(perpage):((perpage)*(page))]
+    goal = sa.t2()[1]
     print(paginated_products)
-    return render_template('index.html', products = paginated_products, page=page, max_page = max_page)
+    return render_template('index.html', products = paginated_products, page=page, max_page = max_page, goal = goal)
 
 @app.route("/about_us", methods=['GET'])
 def about_us():
@@ -613,21 +614,21 @@ def seller_signup():
 
 
 ######## SERVICE COMPOSITION #############
-@app.route('/api/compositions/series', methods=['GET', 'POST'])
-def synchronous_composition():          # SERIES   
-    print("Request method in series asynchronous_composition: %s"%request.method)
+# @app.route('/api/compositions/series', methods=['GET', 'POST'])
+# def synchronous_composition():          # SERIES   
+#     print("Request method in series asynchronous_composition: %s"%request.method)
 
-    if request.method == 'GET':  # return info for that user
+#     if request.method == 'GET':  # return info for that user
 
-        print("Parallelism: Series")
-        res = sa.t1()
+#         print("Parallelism: Series")
+#         res = sa.t1()
 
-        print(res)
-        if len(res) == 0:
-            rsp = Response('No data found', status=404, content_type='application/json')
-        else:
-            rsp = Response(json.dumps(res), status=200, content_type="application/json")
-        return rsp
+#         print(res)
+#         if len(res) == 0:
+#             rsp = Response('No data found', status=404, content_type='application/json')
+#         else:
+#             rsp = Response(json.dumps(res), status=200, content_type="application/json")
+#         return rsp
 
 
 
@@ -643,11 +644,12 @@ def asynchronous_composition():          # PARALLELISM USING ASYNCIO
         res = sa.t2()
 
         print(res)
+        print(res[2])
         if len(res) == 0:
             rsp = Response('No data found', status=404, content_type='application/json')
         else:
             rsp = Response(json.dumps(res), status=200, content_type="application/json")
-        return rsp
+        return 
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000, debug=True)

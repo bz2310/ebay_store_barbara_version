@@ -42,9 +42,12 @@
       {% if page < max_page %} <div class="links"><a href="{{ url_for('index', page=page+1) }}">Next products >></a></div>{% else %}{% endif %}
         {% if page > 1 %} <div class="links"><a href="{{ url_for('index', page=page-1) }}"> << Previous products</a></div>{% else %}{% endif %}
 
-   	 <hr>
+   	 <br>
    	 <div class="checkout">
    	 <div class="total">
+		{% if goal %} <div class="Subtotal">Total Donation Goal: </div> <div class="total-amount">{{goal}}</div>{% endif %}
+		<hr>
+
    	 	<div>
    	 		<div class="Subtotal">Sub-Total</div>
    	 		<div class="items">2 items</div>
