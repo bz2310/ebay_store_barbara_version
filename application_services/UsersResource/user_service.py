@@ -2,7 +2,6 @@ from __future__ import print_function
 from application_services.BaseApplicationResource import BaseRDBApplicationResource
 from database_services.RDBService import RDBService
 
-
 class UserResource(BaseRDBApplicationResource):
 
     def __init__(self):

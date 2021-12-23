@@ -1,6 +1,7 @@
-import grequests
+import gevent
 import requests
 import json
+import grequests
 from datetime import datetime
 
 
@@ -21,9 +22,6 @@ def t1():                       # Get all product names/ total money
     x = grequests.map(rs)
     #print("x", x)
     e = datetime.now()
-
-
-
     for r in x:
         if r is None:
             continue
@@ -77,5 +75,5 @@ def t2():
 
     return (total_money_per_seller, charity_store_valuation)
 
-#print(t1())
-#print(t2())
+print(t1())
+print(t2())

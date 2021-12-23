@@ -1,5 +1,6 @@
 from __future__ import print_function
-
+from gevent import monkey
+monkey.patch_all()
 from flask import Flask, Response, request, render_template, redirect, url_for
 from flask_cors import CORS
 from flask_dance.contrib.google import make_google_blueprint, google
@@ -13,7 +14,7 @@ from datetime import datetime
 import requests
 import logging
 import numpy as np
-#import simple_async as sa
+import simple_async as sa
 
 from application_services.UsersResource.user_service import UserResource
 from application_services.ProductsResource import ProductResource
@@ -612,23 +613,41 @@ def seller_signup():
 
 
 ######## SERVICE COMPOSITION #############
-@app.route('/api/compositions/1', methods=['GET', 'POST'])
+@app.route('/api/compositions/series', methods=['GET', 'POST'])
 def synchronous_composition():          # SERIES   
-    sa2 = sa.t2()
-    return sa2
+    print("Request method in series asynchronous_composition: %s"%request.method)
+
+    if request.method == 'GET':  # return info for that user
+
+        print("Parallelism: Series")
+        res = sa.t1()
+
+        print(res)
+        if len(res) == 0:
+            rsp = Response('No data found', status=404, content_type='application/json')
+        else:
+            rsp = Response(json.dumps(res), status=200, content_type="application/json")
+        return rsp
 
 
 
 
 
-@app.route('/api/compositions/2', methods=['GET', 'POST'])
+@app.route('/api/compositions/parallel', methods=['GET', 'POST'])
 def asynchronous_composition():          # PARALLELISM USING ASYNCIO
-    sa1 = sa.t1()
-    return sa1
-    #call simple_async.t1()
-    #    return simple_async.t1()
+    print("Request method in parallel asynchronous_composition: %s"%request.method)
 
+    if request.method == 'GET':  # return info for that user
 
+        print("Parallelism: Parallel")
+        res = sa.t2()
+
+        print(res)
+        if len(res) == 0:
+            rsp = Response('No data found', status=404, content_type='application/json')
+        else:
+            rsp = Response(json.dumps(res), status=200, content_type="application/json")
+        return rsp
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000, debug=True)
